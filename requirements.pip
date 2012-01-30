@@ -1,0 +1,5 @@
+Django>=1.3
+nose
+-e git+git://github.com/praekelt/jmbo-articles.git@develop#egg=jmbo-articles
+django-dirtyfields
+
