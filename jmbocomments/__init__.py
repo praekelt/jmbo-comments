@@ -1,7 +1,7 @@
 def get_model():
-    from models import YALComment
+    from jmbocomments.models import YALComment
     return YALComment
 
 def get_form():
-    from forms import YALCommentForm
+    from jmbocomments.forms import YALCommentForm
     return YALCommentForm
