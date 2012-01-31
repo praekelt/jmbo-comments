@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _, ungettext
-from yal.comments.models import YALComment, YALCommentFlag
+from jmbocomments.models import YALComment, YALCommentFlag
 
 def perform_flag(*args, **kwargs):
     raise NotImplemented, 'work in progress'
