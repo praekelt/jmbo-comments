@@ -1,7 +1,7 @@
 from django.contrib.comments.forms import CommentForm
 from django import forms
 
-from yal.comments.models import YALComment
+from jmbocomments.models import YALComment
 
 
 class YALCommentForm(CommentForm):

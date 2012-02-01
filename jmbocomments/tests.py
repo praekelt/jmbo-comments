@@ -1,6 +1,3 @@
-import os
-os.environ['DJANGO_SETTINGS_MODULE'] = 'jmbocomments.settings'
-
 from django.test import TestCase
 from django.test.client import Client
 from django.core.urlresolvers import reverse

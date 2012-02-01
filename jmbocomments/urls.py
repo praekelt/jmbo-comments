@@ -1,7 +1,7 @@
 from django.conf.urls.defaults import patterns, include, url
 
 
-urlpatterns = patterns('yal.comments.views',
+urlpatterns = patterns('jmbocomments.views',
     url(r'^like/(?P<pk>\d+)/$', 'comment_like', name='comment_like'),
     url(r'^flag/(?P<pk>\d+)/$', 'comment_flag', name='comment_flag'),
 )
