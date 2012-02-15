@@ -16,6 +16,14 @@ class YALCommentFlagAdmin(admin.TabularInline):
     extra = 1
     exclude = ['flag_users']
     readonly_fields = ['flag_count']
+    fieldsets = (
+        ('Moderation',
+            {
+                'fields': ('flag', 'reason',),
+                'classes': ('collapse',),
+            }
+        ),
+    )
 
 class YALCommentAdmin(admin.ModelAdmin):
     fieldsets = (
@@ -26,14 +34,18 @@ class YALCommentAdmin(admin.ModelAdmin):
            {'fields': ('user', 'comment')}
         ),
         (_('Metadata'),
-           {'fields': ('submit_date', 'is_public', 'is_removed', 'like_count')}
+           {
+            'fields': ('submit_date', 'is_public', 'is_removed', 'like_count'),
+            'classes': ('collapse',)
+           }
         ),
      )
 
     list_display = ('content_object', 'content_type', 'user', 'comment',
                     'submit_date', 'is_public', 'is_removed', 'like_count',
                     'latest_flag')
-    list_filter = ('submit_date', 'site', 'is_public', 'is_removed')
+    list_filter = ('submit_date', 'site', 'is_public', 'is_removed',
+                    'content_type',)
     date_hierarchy = 'submit_date'
     ordering = ('-submit_date',)
     raw_id_fields = ('user',)
