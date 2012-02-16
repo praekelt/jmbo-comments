@@ -6,7 +6,7 @@ from django.contrib.comments.signals import comment_was_flagged
 from django.contrib.auth.models import User
 
 
-class YALComment(BaseCommentAbstractModel):
+class Comment(BaseCommentAbstractModel):
     parent = models.ForeignKey('self', blank=True, null=True, related_name='children')
     user = models.ForeignKey(User, related_name='comments') # user is always required
     comment = models.TextField(max_length=3000)
@@ -25,11 +25,11 @@ class YALComment(BaseCommentAbstractModel):
 
     def community_moderation_flags(self):
         return self.flag_set.filter(
-            flag=YALCommentFlag.COMMUNITY_REMOVAL)
+            flag=CommentFlag.COMMUNITY_REMOVAL)
 
     def moderation_flags(self):
         return self.flag_set.filter(
-            flag=YALCommentFlag.MODERATOR_DELETION)
+            flag=CommentFlag.MODERATOR_DELETION)
 
     def is_moderated(self):
         return self.moderation_flags().exists()
@@ -41,14 +41,14 @@ class YALComment(BaseCommentAbstractModel):
     def __unicode__(self):
         return '%s: %s...' % (self.user, self.comment[:50])
 
-class YALCommentFlag(models.Model):
+class CommentFlag(models.Model):
     # Constants for flag types
     SUGGEST_REMOVAL = "removal suggestion"
     COMMUNITY_REMOVAL = "removed by community moderation"
     MODERATOR_DELETION = "moderator deletion"
     MODERATOR_APPROVAL = "moderator approval"
 
-    comment = models.ForeignKey(YALComment, related_name='flag_set')
+    comment = models.ForeignKey(Comment, related_name='flag_set')
     flag = models.CharField('flag', choices=((opt,opt) for opt in [
             SUGGEST_REMOVAL,
             COMMUNITY_REMOVAL,
@@ -68,7 +68,7 @@ class YALCommentFlag(models.Model):
         return 'Flagged comment'
 
 
-class YALCommentModerator(CommentModerator):
+class CommentModerator(CommentModerator):
 
     def check_for_duplicate_comment_submission(self, comment, content_type,
                                         object_pk, user):
@@ -81,7 +81,7 @@ class YALCommentModerator(CommentModerator):
         if user.is_anonymous():
             return False
         else:
-            comments = YALComment.objects.filter(user=user,
+            comments = Comment.objects.filter(user=user,
                 content_type=content_type, object_pk=object_pk)
             if comments.exists():
                 return comments.latest('submit_date').comment != comment.comment

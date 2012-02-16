@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.test.client import Client
 from django.core.urlresolvers import reverse
 from jmbocomments.test_utils import params_for_comments
-from jmbocomments.models import YALComment, YALCommentFlag
+from jmbocomments.models import Comment, CommentFlag
 from jmboarticles.models import Article
 
 # when you get the hang of this; write the following tests:
@@ -35,7 +35,7 @@ class CommentTestCase(TestCase):
         response = self.client.post(reverse('comments-post-comment'),
             params)
         self.assertEqual(response.status_code, 302)
-        return YALComment.objects.latest('submit_date')
+        return Comment.objects.latest('submit_date')
 
     def flag_comment(self, comment, **headers):
         response = self.client.get(reverse('comment_flag', kwargs={
@@ -51,7 +51,7 @@ class CommentTestCase(TestCase):
         flag = self.flag_comment(comment)
         self.assertFalse(comment.is_moderated())
         self.assertFalse(comment.is_community_moderated())
-        self.assertEqual(flag.flag, YALCommentFlag.SUGGEST_REMOVAL)
+        self.assertEqual(flag.flag, CommentFlag.SUGGEST_REMOVAL)
 
     def test_comment_flag_uniques(self):
         """A user is only allowed to flag a comment once"""
@@ -75,5 +75,5 @@ class CommentTestCase(TestCase):
         flag = self.flag_comment(comment, HTTP_VTL_USER_MSISDN=1)
         flag = self.flag_comment(comment, HTTP_VTL_USER_MSISDN=2)
         self.assertEqual(flag.flag_count, 3)
-        self.assertEqual(flag.flag, YALCommentFlag.COMMUNITY_REMOVAL)
+        self.assertEqual(flag.flag, CommentFlag.COMMUNITY_REMOVAL)
 
