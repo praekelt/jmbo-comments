@@ -35,7 +35,7 @@ class CommentTestCase(TestCase):
         response = self.client.post(reverse('comments-post-comment'),
             params)
         self.assertEqual(response.status_code, 302)
-        return Comment.objects.latest('submit_date')
+        return UserComment.objects.latest('submit_date')
 
     def flag_comment(self, comment, **headers):
         response = self.client.get(reverse('comment_flag', kwargs={
