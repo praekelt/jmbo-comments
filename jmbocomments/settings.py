@@ -145,7 +145,7 @@ INSTALLED_APPS = (
 
     # yal
     'jmboarticles',
-    'jmbopolls',
+    'jmboarticles.poll',
     #'chat',
     #'accounts',
     #'featured',

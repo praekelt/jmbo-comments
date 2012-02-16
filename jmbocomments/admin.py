@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _, ungettext
-from jmbocomments.models import Comment, CommentFlag
+from jmbocomments.models import UserComment, UserCommentFlag
 
 def perform_flag(*args, **kwargs):
     raise NotImplemented, 'work in progress'
@@ -11,8 +11,8 @@ def perform_approve(*args, **kwargs):
 def perform_delete(*args, **kwargs):
     raise NotImplemented, 'work in progress'
 
-class CommentFlagAdmin(admin.TabularInline):
-    model = CommentFlag
+class UserCommentFlagAdmin(admin.TabularInline):
+    model = UserCommentFlag
     extra = 1
     exclude = ['flag_users']
     readonly_fields = ['flag_count']
@@ -25,7 +25,7 @@ class CommentFlagAdmin(admin.TabularInline):
         ),
     )
 
-class CommentAdmin(admin.ModelAdmin):
+class UserCommentAdmin(admin.ModelAdmin):
     fieldsets = (
         (None,
            {'fields': ('content_type', 'content_object',)}
@@ -52,7 +52,7 @@ class CommentAdmin(admin.ModelAdmin):
     search_fields = ('comment', 'user__username',)
     actions = ["flag_comments", "approve_comments", "remove_comments"]
     readonly_fields = ['submit_date', 'content_type', 'content_object', 'user', 'like_count']
-    inlines = [CommentFlagAdmin]
+    inlines = [UserCommentFlagAdmin]
 
     def latest_flag(self, instance):
         if instance.flag_set.exists():
@@ -62,7 +62,7 @@ class CommentAdmin(admin.ModelAdmin):
             return ''
 
     def get_actions(self, request):
-        actions = super(CommentAdmin, self).get_actions(request)
+        actions = super(UserCommentAdmin, self).get_actions(request)
         # Only superusers should be able to delete the comments from the DB.
         if not request.user.is_superuser and 'delete_selected' in actions:
             actions.pop('delete_selected')
@@ -103,5 +103,5 @@ class CommentAdmin(admin.ModelAdmin):
                         n_comments)
         self.message_user(request, msg % {'count': n_comments, 'action': done_message(n_comments)})
 
-admin.site.register(Comment, CommentAdmin)
-admin.site.register(CommentFlag)
+admin.site.register(UserComment, UserCommentAdmin)
+admin.site.register(UserCommentFlag)
