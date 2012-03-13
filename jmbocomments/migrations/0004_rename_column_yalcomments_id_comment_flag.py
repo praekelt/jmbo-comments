@@ -9,12 +9,12 @@ class Migration(SchemaMigration):
     def forwards(self, orm):
         
         # Renaming model 'YALComment'
-        db.rename_column('jmbocomments_usercommentflag_flag_users', 'yalcomment_id', 'usercomment_id')
+        db.rename_column('jmbocomments_usercommentflag_flag_users', 'yalcommentflag_id', 'usercomment_id')
         
 
     def backwards(self, orm):
         
-        db.rename_column('jmbocomments_usercommentflag_flag_users', 'usercomment_id', 'yalcomment_id')
+        db.rename_column('jmbocomments_usercommentflag_flag_users', 'usercomment_id', 'yalcommentflag_id')
 
 
     models = {
