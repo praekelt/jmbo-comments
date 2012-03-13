@@ -42,7 +42,11 @@ class CommentTestCase(TestCase):
             'pk': comment.pk,
         }), **headers)
         return comment.flag_set.latest()
-
+    
+    def like_comment(self, comment, **headers):
+        response = self.client.get(reverse('comment_like', kwargs={
+            'pk': comment.pk,
+        }), **headers)
 
     def test_comment_flagging(self):
         """Flagging a comment should result in the flag being set"""
@@ -77,3 +81,9 @@ class CommentTestCase(TestCase):
         self.assertEqual(flag.flag_count, 3)
         self.assertEqual(flag.flag, UserCommentFlag.COMMUNITY_REMOVAL)
 
+
+    def test_comment_liking(self):
+        comment = self.place_comment(self.article, comment='hello world',
+            next=self.article_url)
+        self.like_comment(comment)
+        self.assertEqual(UserComment.objects.get(pk=comment.pk).like_count, 1)
