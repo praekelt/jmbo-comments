@@ -1,0 +1,16 @@
+== JMBO Comments ==
+
+Jmbo Comments was built to remove the table `joins` accumulated by the method of
+extensibility provided in Django's Comments: Inhertiance.
+
+Traditionally you would inherite from `Comments,` which would accrue a join, so 
+we've inherited directly from `BaseCommentAbstractModel` and provided the 
+fields that you might require.
+
+In addition we've made the following choices:
+
+- You _could_ do nested comments via the `parent` field.
+- Our views don't allow Anonymous comments.
+- Removed the `user_*` fields.
+- Added `like_count` and `like_users` to be more social.
+

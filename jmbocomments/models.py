@@ -71,7 +71,7 @@ class UserCommentFlag(models.Model):
 class UserCommentModerator(CommentModerator):
 
     def check_for_duplicate_comment_submission(self, comment, content_type,
-                                        object_pk, user):
+                                        object_pk, user): # todo, this is already added one the form level. We should just re-implement.
         """
         Before saving to the db check if we've already written a comment
         for this user with content_type & object_pk with the exact same

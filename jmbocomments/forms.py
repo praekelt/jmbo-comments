@@ -5,7 +5,8 @@ from jmbocomments.models import UserComment
 
 
 class UserCommentForm(CommentForm):
-    email = forms.EmailField(required=False) # overriden, YAL users don't have email only MSISDN.
+    email = forms.EmailField(required=False) # overriden, any user information
+                                             # is provided by the `user` model.
 
     def get_comment_model(self):
         # this is not really needed anymore, as was used by function below.
