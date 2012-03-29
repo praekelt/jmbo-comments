@@ -25,6 +25,23 @@ class UserCommentFlagAdmin(admin.TabularInline):
         ),
     )
 
+
+class UserCommentFlagModelAdmin(admin.ModelAdmin):
+    model = UserCommentFlag
+    extra = 1
+    exclude = ['flag_users']
+    readonly_fields = ['flag_count']
+    fieldsets = (
+        ('Moderation',
+            {
+                'fields': ('flag', 'reason',),
+                'classes': ('collapse',),
+            }
+        ),
+    )
+    list_display = ('comment', 'flag_count', 'flag')
+    
+
 class UserCommentAdmin(admin.ModelAdmin):
     fieldsets = (
         (None,
@@ -104,4 +121,4 @@ class UserCommentAdmin(admin.ModelAdmin):
         self.message_user(request, msg % {'count': n_comments, 'action': done_message(n_comments)})
 
 admin.site.register(UserComment, UserCommentAdmin)
-admin.site.register(UserCommentFlag)
+admin.site.register(UserCommentFlag, UserCommentFlagModelAdmin)
