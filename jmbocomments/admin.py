@@ -34,8 +34,7 @@ class UserCommentFlagModelAdmin(admin.ModelAdmin):
     fieldsets = (
         ('Moderation',
             {
-                'fields': ('flag', 'reason',),
-                'classes': ('collapse',),
+                'fields': ('comment', 'flag', 'reason',)
             }
         ),
     )
