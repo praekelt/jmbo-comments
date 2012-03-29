@@ -30,7 +30,7 @@ class UserCommentFlagModelAdmin(admin.ModelAdmin):
     model = UserCommentFlag
     extra = 1
     exclude = ['flag_users']
-    readonly_fields = ['flag_count']
+    readonly_fields = ['flag_count', 'comment']
     fieldsets = (
         ('Moderation',
             {
