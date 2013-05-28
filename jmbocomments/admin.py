@@ -2,14 +2,25 @@ from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _, ungettext
 from jmbocomments.models import UserComment, UserCommentFlag
 
-def perform_flag(*args, **kwargs):
-    raise NotImplemented, 'work in progress'
 
-def perform_approve(*args, **kwargs):
-    raise NotImplemented, 'work in progress'
+def perform_approve(request, comment):
+    fc, created = UserCommentFlag.objects.get_or_create(comment=comment)
+    fc.flag = UserCommentFlag.MODERATOR_APPROVAL
+    fc.save()
 
-def perform_delete(*args, **kwargs):
-    raise NotImplemented, 'work in progress'
+    comment.is_removed = False
+    comment.save()
+
+
+def perform_delete(request, comment):
+    fc, created = UserCommentFlag.objects.get_or_create(comment=comment)
+    fc.flag = UserCommentFlag.MODERATOR_DELETION
+    fc.reason = "This comment was removed by the moderator."
+    fc.save()
+
+    comment.is_removed = True
+    comment.save()
+
 
 class UserCommentFlagAdmin(admin.TabularInline):
     model = UserCommentFlag
@@ -39,7 +50,7 @@ class UserCommentFlagModelAdmin(admin.ModelAdmin):
         ),
     )
     list_display = ('comment', 'flag_count', 'flag')
-    
+
 
 class UserCommentAdmin(admin.ModelAdmin):
     fieldsets = (
@@ -66,7 +77,7 @@ class UserCommentAdmin(admin.ModelAdmin):
     ordering = ('-submit_date',)
     raw_id_fields = ('user',)
     search_fields = ('comment', 'user__username',)
-    actions = ["flag_comments", "approve_comments", "remove_comments"]
+    actions = ["approve_comments", "remove_comments"]
     readonly_fields = ['submit_date', 'content_type', 'content_object', 'user', 'like_count']
     inlines = [UserCommentFlagAdmin]
 
@@ -79,20 +90,14 @@ class UserCommentAdmin(admin.ModelAdmin):
 
     def get_actions(self, request):
         actions = super(UserCommentAdmin, self).get_actions(request)
-        # Only superusers should be able to delete the comments from the DB.
-        if not request.user.is_superuser and 'delete_selected' in actions:
-            actions.pop('delete_selected')
+        # No one is allowed to delete a comment
+        actions.pop('delete_selected')
         if not request.user.has_perm('comments.can_moderate'):
             if 'approve_comments' in actions:
                 actions.pop('approve_comments')
             if 'remove_comments' in actions:
                 actions.pop('remove_comments')
         return actions
-
-    def flag_comments(self, request, queryset):
-        self._bulk_flag(request, queryset, perform_flag,
-                        lambda n: ungettext('flagged', 'flagged', n))
-    flag_comments.short_description = _("Flag selected comments")
 
     def approve_comments(self, request, queryset):
         self._bulk_flag(request, queryset, perform_approve,
