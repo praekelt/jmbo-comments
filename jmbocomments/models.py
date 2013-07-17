@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q
 from django.contrib.comments.models import BaseCommentAbstractModel
 from django.contrib.comments.managers import CommentManager
 from django.contrib.comments.moderation import CommentModerator
@@ -21,11 +22,12 @@ class UserComment(BaseCommentAbstractModel):
     objects = CommentManager()
 
     def is_community_moderated(self):
-        return self.community_moderation_flags().exists()
+        return self.flag_set.filter(flag=UserCommentFlag.COMMUNITY_REMOVAL)\
+                            .exists()
 
     def community_moderation_flags(self):
-        return self.flag_set.filter(
-            flag=UserCommentFlag.COMMUNITY_REMOVAL)
+        return self.flag_set.filter(Q(flag=UserCommentFlag.COMMUNITY_REMOVAL) |
+                                    Q(flag=UserCommentFlag.SUGGEST_REMOVAL))
 
     def moderation_flags(self):
         return self.flag_set.filter(
