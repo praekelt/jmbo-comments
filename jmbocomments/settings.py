@@ -11,7 +11,7 @@ TEMPLATE_DEBUG = True
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+        'ENGINE': 'django.contrib.gis.db.backends.spatialite', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
         'NAME': 'my_comments.db',       # Or path to database file if using sqlite3.
         'USER': '',       # Not used with sqlite3.
         'PASSWORD': '',   # Not used with sqlite3.
@@ -131,6 +131,7 @@ INSTALLED_APPS = (
     # comments
     'django.contrib.comments',
     'jmbocomments',
+    'downloads',
 
     # support
     #'gunicorn',
@@ -144,12 +145,14 @@ INSTALLED_APPS = (
     #'haystack',
 
     # yal
+    'jmbo',
     'jmboarticles',
     'jmboarticles.poll',
-    #'chat',
-    #'accounts',
-    #'featured',
-    #'video',
+    'jmboarticles.video',
+    'photologue',
+    'atlas',
+    'publisher',
+    'secretballot',
 
     #jmbo
     'category',
