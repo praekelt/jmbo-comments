@@ -2,8 +2,8 @@ from django.test import TestCase
 from django.test.client import Client
 from django.core.urlresolvers import reverse
 from jmbocomments.test_utils import params_for_comments
-from jmbocomments.models import UserComment, UserCommentFlag
 from jmboarticles.models import Article
+from jmbocomments.models import UserComment, UserCommentFlag
 
 # when you get the hang of this; write the following tests:
 
@@ -42,7 +42,7 @@ class CommentTestCase(TestCase):
             'pk': comment.pk,
         }), **headers)
         return comment.flag_set.latest()
-    
+
     def like_comment(self, comment, **headers):
         response = self.client.get(reverse('comment_like', kwargs={
             'pk': comment.pk,
@@ -76,10 +76,13 @@ class CommentTestCase(TestCase):
             next=self.article_url)
         flag = self.flag_comment(comment)
         self.assertEqual(flag.flag_count, 1)
+        self.assertFalse(UserComment.objects.get(pk=comment.pk).is_removed)
+
         flag = self.flag_comment(comment, HTTP_VTL_USER_MSISDN=1)
         flag = self.flag_comment(comment, HTTP_VTL_USER_MSISDN=2)
         self.assertEqual(flag.flag_count, 3)
         self.assertEqual(flag.flag, UserCommentFlag.COMMUNITY_REMOVAL)
+        self.assertTrue(UserComment.objects.get(pk=comment.pk).is_removed)
 
 
     def test_comment_liking(self):
