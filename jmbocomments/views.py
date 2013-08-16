@@ -33,6 +33,8 @@ def comment_flag(request, pk):
             if fc.flag_count > 2:
                 fc.flag = UserCommentFlag.COMMUNITY_REMOVAL
                 fc.reason = "This comment was removed by the community."
+                comment.is_removed = True
+                comment.save()
             else:
                 fc.flag = UserCommentFlag.SUGGEST_REMOVAL
                 fc.reason = "Reported for moderation by the community."
