@@ -26,7 +26,6 @@ def comment_flag(request, pk):
     # and auto-moderate comments.
     comment = get_object_or_404(UserComment, pk=pk)
     if request.user.is_authenticated():
-        print request.user.flagged_comments.all()
         if not request.user.flagged_comments.filter(comment=comment).exists():
             fc, created = UserCommentFlag.objects.get_or_create(comment=comment)
             fc.flag_count += 1

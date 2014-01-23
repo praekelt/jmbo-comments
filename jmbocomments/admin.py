@@ -4,6 +4,10 @@ from jmbocomments.models import UserComment, UserCommentFlag
 
 
 def perform_approve(request, comment):
+    #get_or_create fails if more than 1 results returned
+    if UserCommentFlag.objects.filter(comment=comment).count() > 1:
+        UserCommentFlag.objects.filter(comment=comment).delete()
+
     fc, created = UserCommentFlag.objects.get_or_create(comment=comment)
     fc.flag = UserCommentFlag.MODERATOR_APPROVAL
     fc.save()
@@ -13,6 +17,10 @@ def perform_approve(request, comment):
 
 
 def perform_delete(request, comment):
+    #get_or_create fails if more than 1 results returned
+    if UserCommentFlag.objects.filter(comment=comment).count() > 1:
+        UserCommentFlag.objects.filter(comment=comment).delete()
+
     fc, created = UserCommentFlag.objects.get_or_create(comment=comment)
     fc.flag = UserCommentFlag.MODERATOR_DELETION
     fc.reason = "This comment was removed by the moderator."
